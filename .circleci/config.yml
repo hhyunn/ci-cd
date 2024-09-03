@@ -1,12 +1,39 @@
 version: 2.1
 orbs:
-    # "cypress-io/cypress@3" installs the latest published
-    # version "s.x.y" of the orb. We recommend you then use
-    # the strict explicit version "cypress-io/cypress@3.x.y"
-    # to lock the version and prevent unexpected CI changes
     cypress: cypress-io/cypress@3
+jobs:
+    run-cypress-in-specified-node-version:
+        executor:
+            name: cypress/default
+            node-version: "20.6"
+        # steps:
+        #     - cypress/install:
+        #           package-manager: "yarn"
+        #     - cypress/run-tests:
+        #           start-command: "npm run start:dev"
+        #           cypress-command: "npx cypress run"
+        steps:
+            - checkout # 코드 체크아웃
+            - run:
+                  name: Install dependencies
+                  command: yarn install # 의존성 설치
+            - run:
+                  name: Build the Next.js app
+                  command: npm run build # 프로덕션 빌드 실행
+            - run:
+                  name: Start the Next.js app
+                  command: npm run start & # 프로덕션 모드로 서버 실행
+            - run:
+                  name: Wait for server to be ready
+                  command: npx wait-on http://localhost:3000 # 서버가 준비될 때까지 대기
+            - cypress/run:
+                  browser: chrome # Cypress를 Chrome에서 실행
+                  headless: true # 헤드리스 모드로 실행
 workflows:
-    build:
+    use-my-orb:
         jobs:
-            - cypress/run: # "run" job comes from "cypress" orb
-                  start-command: "npm run start"
+            - run-cypress-in-specified-node-version:
+              name: Run Cypress in Node 20
+            # - cypress/run:
+            #   start-command: "npm start"
+            #   cypress-command: "npx wait-on@latest http://localhost:8080 && npx cypress run"
