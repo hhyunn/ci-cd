@@ -10,6 +10,8 @@ const createJestConfig = nextJest({
 const config: Config = {
     coverageProvider: "v8",
     testEnvironment: "jsdom",
+    collectCoverage: true, // 커버리지 정보를 수집하도록 설정
+    coverageDirectory: "coverage", // 커버리지 결과를 저장할 디렉토리 설정
     // Add more setup options before each test is run
     // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
