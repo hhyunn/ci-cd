@@ -1,12 +1,12 @@
 version: 2.1
+
 orbs:
     cypress: cypress-io/cypress@3
 
 jobs:
-    build-and-test:
-        executor:
-            name: cypress/default
-            node-version: "20.6" # Node.js 버전 설정
+    run-cypress-tests:
+        docker:
+            - image: cypress/included:latest # Cypress가 포함된 Docker 이미지 사용
         steps:
             - checkout # 코드 체크아웃
             - run:
@@ -20,13 +20,15 @@ jobs:
                   command: npm run start & # 프로덕션 모드로 서버 실행
             - run:
                   name: Wait for server to be ready
-                  command: npx wait-on https://ci-cd-flame.vercel.app # Vercel 배포 주소로 대기
-            - cypress/run:
-                  browser: chrome # Cypress를 Chrome에서 실행
-                  headless: true # 헤드리스 모드로 실행
+                  command: npx wait-on http://localhost:3000 # 앱이 실행될 때까지 대기
+            - cypress/install:
+                  package-manager: "yarn"
+            - cypress/run-tests:
+                  start-command: "npm run start" # 이미 서버가 실행되고 있으므로 start-command 필요 없음
+                  cypress-command: "npx cypress run" # Cypress 테스트 실행
 
 workflows:
     version: 2
-    build_and_test:
+    test:
         jobs:
-            - build-and-test
+            - run-cypress-tests
