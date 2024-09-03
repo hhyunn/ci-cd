@@ -10,14 +10,8 @@ jobs:
             - cypress/install:
                   package-manager: "yarn"
             - cypress/run-tests:
-                  start-command: "npm run start:dev"
-                  cypress-command: "npx cypress run"
-            - run:
-                  name: Start Server
-                  command: npm run build && npm run start
-            - run:
-                  name: Run Cypress
-                  command: npx wait-on@latest http://localhost:3000 && npx cypress run
+                  start-command: "npm run build && npm run start"
+                  cypress-command: "npx wait-on@latest http://localhost:3000 && npx cypress run"
 workflows:
     use-my-orb:
         jobs:
