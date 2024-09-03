@@ -1,17 +1,12 @@
 version: 2.1
 orbs:
     cypress: cypress-io/cypress@3
+
 jobs:
     run-cypress-in-specified-node-version:
         executor:
             name: cypress/default
-            node-version: "20.6"
-        # steps:
-        #     - cypress/install:
-        #           package-manager: "yarn"
-        #     - cypress/run-tests:
-        #           start-command: "npm run start:dev"
-        #           cypress-command: "npx cypress run"
+            node-version: "20.6" # Node.js 버전 설정
         steps:
             - checkout # 코드 체크아웃
             - run:
@@ -25,15 +20,13 @@ jobs:
                   command: npm run start & # 프로덕션 모드로 서버 실행
             - run:
                   name: Wait for server to be ready
-                  command: npx wait-on http://localhost:3000 # 서버가 준비될 때까지 대기
+                  command: npx wait-on https://ci-cd-flame.vercel.app # 서버가 준비될 때까지 대기
             - cypress/run:
                   browser: chrome # Cypress를 Chrome에서 실행
                   headless: true # 헤드리스 모드로 실행
+
 workflows:
+    version: 2
     use-my-orb:
         jobs:
-            - run-cypress-in-specified-node-version:
-              name: Run Cypress in Node 20
-            # - cypress/run:
-            #   start-command: "npm start"
-            #   cypress-command: "npx wait-on@latest http://localhost:8080 && npx cypress run"
+            - run-cypress-in-specified-node-version
