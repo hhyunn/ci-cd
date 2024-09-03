@@ -8,8 +8,7 @@ describe("Home Page Test", () => {
     });
 
     it("'Docs'라는 anchor heading이 있고, 이 anchor의 href 속성이 정확하게 설정되어 있다.", () => {
-        cy.get("a")
-            .contains("Docs")
+        cy.contains("a", "Docs")
             .should("have.attr", "href")
             .and(
                 "equal",
